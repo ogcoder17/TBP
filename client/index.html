@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Homepage</title>
+    <link rel="stylesheet" href="styles.css"> <!-- You can link to an external CSS file -->
+    <style>
+        /* Basic styling for the homepage */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+        }
+
+        nav {
+            background-color: #444;
+            overflow: hidden;
+        }
+
+        nav a {
+            float: left;
+            display: block;
+            color: white;
+            padding: 14px 20px;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        nav a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+
+        .main-content {
+            padding: 20px;
+        }
+
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            /* position:; */
+            width: 100%;
+            bottom: 0;
+        }
+
+        .hero-section {
+            background-color: #0073e6;
+            color: white;
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        .hero-section h1 {
+            font-size: 3em;
+            margin: 0;
+        }
+
+        .hero-section p {
+            font-size: 1.2em;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .company-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .company-list li {
+            margin: 5px 0;
+        }
+        .btn {
+            background-color: #007BFF;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>REPORT GENIX</h1>
+    </header>
+
+    <nav>
+        <a href="/">Home</a>
+        <a href="user_reminder">Reminder</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+        <a href="signup">Signup</a>
+        <a href="login">Login</a>
+        
+    </nav>
+
+    <section class="hero-section">
+        <h1>Your Journey Begins Here</h1>
+    
+    </section>
+
+        <h1>Company Directory</h1>
+        
+        <!-- Add Company Form -->
+        <form id="addCompanyForm">
+            <input type="text" id="companyName" placeholder="Enter company name" required>
+            <input type="text" id="companyDescription" placeholder="Enter company description" required>
+            <button type="submit" class="btn">Add Company</button>
+        </form>
+    
+        <h2>Companies</h2>
+        <ul id="companyList" class="company-list"></ul>
+    
+        <!-- Dynamic Company Pages -->
+        <div id="companyPages" class="hidden"></div>
+    
+        <script>
+            const companyList = document.getElementById('companyList');
+            const companyPages = document.getElementById('companyPages');
+            const addCompanyForm = document.getElementById('addCompanyForm');
+    
+            addCompanyForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const companyName = document.getElementById('companyName').value;
+                const companyDescription = document.getElementById('companyDescription').value;
+    
+                if (companyName && companyDescription) {
+                    addCompany(companyName, companyDescription);
+                    addCompanyForm.reset();
+                }
+            });
+    
+            function addCompany(name, description) {
+                // Add to the main list
+                const listItem = document.createElement('li');
+                const link = document.createElement('a');
+                link.textContent = name;
+                link.href = `#${name}`;
+                link.addEventListener('click', () => showCompanyPage(name));
+                listItem.appendChild(link);
+                companyList.appendChild(listItem);
+    
+                // Create a separate page for the company
+                const companyPage = document.createElement('div');
+                companyPage.id = name;
+                companyPage.className = 'hidden';
+                companyPage.innerHTML = `
+                    <h2>${name}</h2>
+                    <p>${description}</p>
+                    <button class="btn" onclick="goBack()">Back to Directory</button>
+                `;
+                companyPages.appendChild(companyPage);
+            }
+    
+            function showCompanyPage(name) {
+                document.querySelectorAll('.hidden').forEach(page => page.classList.add('hidden'));
+                document.getElementById(name).classList.remove('hidden');
+                companyList.parentNode.classList.add('hidden');
+            }
+    
+            function goBack() {
+                document.querySelectorAll('.hidden').forEach(page => page.classList.add('hidden'));
+                companyList.parentNode.classList.remove('hidden');
+            }
+        </script>
+
+        
+    <div class="main-content">
+        <h2>About Us</h2>
+        <p>This is the section where you introduce your company. You can include a brief description of what you do and your mission.</p>
+        <h2>Contact</h2>
+        
+    </div>
+    <footer>
+        <p>&copy; 2024 REPORT GENIX. All rights reserved.</p>
+    </footer>
+
+</body>
+</html>

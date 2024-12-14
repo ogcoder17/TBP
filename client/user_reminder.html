@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Reminder with Time</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 4px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .company-item {
+            background-color: #f9f9f9;
+            margin: 10px 0;
+            padding: 10px;
+            border-left: 5px solid #4CAF50;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Business Reminder</h1>
+
+        <form id="company-form">
+            <input type="text" id="company-name" placeholder="Company Name" required>
+            <textarea id="reminder" placeholder="Add a reminder" rows="4" required></textarea>
+            <label for="date">Date:</label>
+            <input type="date" id="date" required>
+            <label for="time">Time:</label>
+            <input type="time" id="time" required>
+            <button type="submit">Add Reminder</button>
+        </form>
+
+        <div id="company-list">
+            <!-- List of reminders -->
+        </div>
+    </div>
+
+    <script>
+        // Get references to form and list
+        const form = document.getElementById("company-form");
+        const companyList = document.getElementById("company-list");
+
+        // Request notification permission when the page loads
+        document.addEventListener("DOMContentLoaded", () => {
+            if (Notification.permission !== "granted") {
+                Notification.requestPermission().then((permission) => {
+                    console.log("Notification permission:", permission);
+                });
+            }
+
+            // Add sample reminders
+            addSampleReminder("Sample Company 1", "Meeting with client", "2024-12-10", "20:28");
+            addSampleReminder("Sample Company 2", "Submit proposal", "2024-12-10", "20:29");
+        });
+
+        // Add event listener for form submission
+        form.addEventListener("submit", (e) => {
+            e.preventDefault();
+
+            // Get user input
+            const companyName = document.getElementById("company-name").value;
+            const reminder = document.getElementById("reminder").value;
+            const date = document.getElementById("date").value;
+            const time = document.getElementById("time").value;
+
+            // Add reminder to the list
+            addReminder(companyName, reminder, date, time);
+
+            // Clear form inputs
+            form.reset();
+        });
+
+        // Function to add a reminder
+        function addReminder(companyName, reminder, date, time) {
+            const companyItem = document.createElement("div");
+            companyItem.classList.add("company-item");
+            companyItem.innerHTML = `
+                <h3>${companyName}</h3>
+                <p><strong>Reminder:</strong> ${reminder}</p>
+                <p><strong>Date:</strong> ${date}, <strong>Time:</strong> ${time}</p>
+            `;
+            companyList.appendChild(companyItem);
+
+            // Schedule the notification
+            const reminderDateTime = new Date(`${date}T${time}`);
+            const now = new Date();
+            const timeUntilReminder = reminderDateTime - now;
+
+            if (timeUntilReminder > 0) {
+                setTimeout(() => {
+                    if (Notification.permission === "granted") {
+                        new Notification(`Reminder for ${companyName}`, {
+                            body: reminder,
+                        });
+                    } else {
+                        console.error("Notification permission not granted.");
+                    }
+                }, timeUntilReminder);
+            } else {
+                console.warn("The reminder time is in the past. No notification scheduled.");
+            }
+        }
+
+        // Function to add a sample reminder
+        function addSampleReminder(companyName, reminder, date, time) {
+            addReminder(companyName, reminder, date, time);
+        }
+    </script>
+</body>
+</html>
